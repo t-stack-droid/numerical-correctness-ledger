@@ -1,21 +1,36 @@
 """scipy.special.nctdtridf fails to invert nctdtr and returns its 1e100 sentinel.
 
 nctdtridf(p, nc, t) is documented as the inverse of nctdtr in the degrees of freedom.
-For nc = -2.6419 and t = -0.6117, the CDF increases with df towards Phi(t - nc) =
-0.97883, so p = 0.97859 (the CDF at df = 7.4207) has a single solution. The library
-returns 1e100, where the CDF is 0.97883, a residual of 2.5e-4. The script accepts any
-finite positive df whose CDF, evaluated independently in mpmath (integral over the chi-
-square mixing density), matches p to 1e-9. The development branch returns NaN here.
+For nc = -2.6419 and t = -0.6117, p = 0.97859 is the CDF at df = 7.4207 (the CDF is not
+monotone in df here, and p is also attained near df = 0.0304). The library returns
+1e100, where the CDF is 0.97883, a residual of 2.5e-4, so it is not a solution. The
+script accepts any finite positive df whose CDF, evaluated independently in mpmath
+(integral over the chi-square mixing density), matches p to 1e-9. The development branch
+returns NaN here.
 
 Run: python scipy_nctdtridf_roundtrip.py
-Exit status 1 means the defect is present in the installed version, 0 means it is not.
+Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by
+this comparison; 2 = the script could not run or a precondition failed.
 """
+import os
 import sys
+import traceback
 
 
 def verdict(present, message):
     print(("DEFECT PRESENT: " if present else "not reproduced: ") + message)
     sys.exit(1 if present else 0)
+
+
+def _could_not_run(exc_type, exc, tb):
+    traceback.print_exception(exc_type, exc, tb)
+    print(f"could not run: {exc_type.__name__}: {exc}")
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(2)
+
+
+sys.excepthook = _could_not_run
 
 import math
 import mpmath as mp
@@ -40,4 +55,4 @@ p = float(nct_cdf(df, nc, t))
 back = float(sc.nctdtridf(p, nc, t))
 resid = abs(float(nct_cdf(back, nc, t)) - p) if math.isfinite(back) and back > 0 else float("inf")
 verdict(not (resid <= 1e-9), f"p = {p!r}; nctdtridf(p, nc, t) = {back!r}, CDF residual {resid:.1e} "
-                             f"(df = {df} solves it)")
+                             f"(df = {df} has residual 0)")

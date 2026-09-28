@@ -1,24 +1,36 @@
-"""statsmodels nonequivalence_poisson_2indep: statistic from the wrong test, p-value above 1.
+"""statsmodels nonequivalence_poisson_2indep: p-value above 1.
 
-The result documents `statistic` as the statistic of the one-sided test with the smaller
-p-value. The code picks the other one. The returned p-value also exceeds 1.
+For counts 30 and 20 with exposures 10 and 12, method='score', compare='ratio' and the
+bounds 0.5 and 2, the returned p-value is 1.285. A p-value must be a finite number in
+[0, 1].
 
 Run: python statsmodels_nonequivalence_poisson_2indep.py
-Exit status 1 means the defect is present in the installed version, 0 means it is not.
+Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by
+this comparison; 2 = the script could not run or a precondition failed.
 """
+import os
 import sys
+import traceback
 
 
 def verdict(present, message):
     print(("DEFECT PRESENT: " if present else "not reproduced: ") + message)
     sys.exit(1 if present else 0)
 
+
+def _could_not_run(exc_type, exc, tb):
+    traceback.print_exception(exc_type, exc, tb)
+    print(f"could not run: {exc_type.__name__}: {exc}")
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(2)
+
+
+sys.excepthook = _could_not_run
+
+import math
 import statsmodels.stats.rates as r
 
-args = (30, 10.0, 20, 12.0)
-res = r.nonequivalence_poisson_2indep(*args, 0.5, 2.0, method="score", compare="ratio")
-t1 = r.test_poisson_2indep(*args, value=0.5, method="score", compare="ratio", alternative="smaller")
-t2 = r.test_poisson_2indep(*args, value=2.0, method="score", compare="ratio", alternative="larger")
-want = t1.statistic if t1.pvalue < t2.pvalue else t2.statistic
-bad = abs(float(res.statistic) - float(want)) > 1e-12 or float(res.pvalue) > 1
-verdict(bad, f"statistic={float(res.statistic)!r} (expected {float(want)!r}), pvalue={float(res.pvalue)!r}")
+res = r.nonequivalence_poisson_2indep(30, 10.0, 20, 12.0, 0.5, 2.0, method="score", compare="ratio")
+p = float(res.pvalue)
+verdict(not (math.isfinite(p) and 0 <= p <= 1), f"pvalue={p!r}")

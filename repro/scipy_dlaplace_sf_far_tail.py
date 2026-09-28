@@ -1,10 +1,10 @@
-"""scipy.special.hyperu returns NaN for negative non-integer a.
+"""scipy.stats.dlaplace.sf is 0 in the far tail.
 
-The confluent hypergeometric function U(a, b, x) is defined for all real a and b and x >
-0 (DLMF 13.2). For a = -1.5, b = 0 the library returns NaN; mpmath gives finite values
-(for example U(-1.5, 0, 1) = 0.1702...).
+For k >= 0, sf(k) = exp(-a(k+1)) / (1 + exp(-a)) (geometric tail of tanh(a/2)
+exp(-a|j|)), which is 1.29e-24 at k = 10, a = 5. The library returns 0, consistent with
+computing 1 - cdf. At moderate k the values agree to 1e-14.
 
-Run: python scipy_hyperu_negative_a.py
+Run: python scipy_dlaplace_sf_far_tail.py
 Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by
 this comparison; 2 = the script could not run or a precondition failed.
 """
@@ -28,11 +28,10 @@ def _could_not_run(exc_type, exc, tb):
 
 sys.excepthook = _could_not_run
 
-import math
 import mpmath as mp
-import scipy.special as sc
+import scipy.stats as st
 
 mp.mp.dps = 40
-rows = [(x, float(sc.hyperu(-1.5, 0.0, x)), float(mp.hyperu(-1.5, 0, x))) for x in (0.1, 1.0, 5.0)]
-bad = [r for r in rows if not (math.isfinite(r[1]) and abs(r[1] - r[2]) <= 1e-8 * abs(r[2]))]
-verdict(bool(bad), f"(x, scipy, mpmath) = {rows}")
+want = float(mp.e ** (-55) / (1 + mp.e ** (-5)))
+got = float(st.dlaplace.sf(10, 5.0))
+verdict(not (abs(got - want) <= 1e-6 * want), f"sf(10, a=5) = {got!r}, expected {want!r}")

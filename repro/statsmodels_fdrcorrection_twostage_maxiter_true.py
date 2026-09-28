@@ -1,10 +1,11 @@
-"""statsmodels fdrcorrection_twostage(maxiter=False) runs one stage instead of two.
+"""statsmodels fdrcorrection_twostage(maxiter=True) runs two stages instead of full iteration.
 
-The docstring says: maxiter=False is two-stage fdr (maxiter=1). The code calls
-range(maxiter), and range(False) is empty, so maxiter=False runs a single stage, the
-same as maxiter=0.
+The docstring says: maxiter=True is full iteration (maxiter=-1 or maxiter=len(pvals)).
+The code calls range(maxiter), and range(True) has one element, so maxiter=True runs the
+two-stage procedure, the same as maxiter=1. For the p-values below (alpha 0.2, method
+'bky') full iteration gives different corrected p-values.
 
-Run: python statsmodels_fdrcorrection_twostage_bool_maxiter.py
+Run: python statsmodels_fdrcorrection_twostage_maxiter_true.py
 Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by
 this comparison; 2 = the script could not run or a precondition failed.
 """
@@ -33,6 +34,6 @@ from statsmodels.stats.multitest import fdrcorrection_twostage
 
 p = np.array([0.01, 0.02, 0.03, 0.3, 0.9])
 run = lambda m: np.asarray(fdrcorrection_twostage(p, alpha=0.2, method="bky", maxiter=m)[1])
-verdict(not np.allclose(run(False), run(1)),
-        f"corrected p with maxiter=False {np.round(run(False), 4).tolist()}, maxiter=1 {np.round(run(1), 4).tolist()}, "
-        f"maxiter=0 {np.round(run(0), 4).tolist()}")
+verdict(not np.allclose(run(True), run(-1)),
+        f"corrected p with maxiter=True {np.round(run(True), 4).tolist()}, maxiter=-1 {np.round(run(-1), 4).tolist()}, "
+        f"maxiter=1 {np.round(run(1), 4).tolist()}")

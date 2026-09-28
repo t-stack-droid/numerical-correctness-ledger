@@ -1,11 +1,11 @@
-"""networkx generate_random_paths raises when a walk starts at an isolated node (crash).
+"""statsmodels confint_proportions_2indep(method='score', compare='diff') raises for 5/20 vs 15/25.
 
-The source has the comment '# Handle isolated nodes by checking for zero row sums', but
-the next lines divide by the row sums without a check: 1/0 gives inf, 0 * inf gives NaN
-transition probabilities, and numpy raises when a walk starts at the isolated node. A
-graph with a single node always triggers it.
+The score interval exists for these counts (inverting the score test with the exact
+constrained estimate gives about (-0.5853, -0.0556)). The library's root finder meets a
+NaN from the constrained-estimate formula and raises ValueError. Unexpected exception,
+not a wrong value.
 
-Run: python networkx_generate_random_paths_isolated.py
+Run: python statsmodels_confint_proportions_2indep_score_raise.py
 Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by
 this comparison; 2 = the script could not run or a precondition failed.
 """
@@ -29,12 +29,10 @@ def _could_not_run(exc_type, exc, tb):
 
 sys.excepthook = _could_not_run
 
-import networkx as nx
-import numpy as np
+from statsmodels.stats.proportion import confint_proportions_2indep
 
-G = nx.Graph(); G.add_node(0)
 try:
-    paths = list(nx.generate_random_paths(G, sample_size=1, path_length=1, seed=np.random.RandomState(8)))
-    verdict(False, f"returned {paths}")
+    ci = confint_proportions_2indep(5, 20, 15, 25, method="score", compare="diff")
+    verdict(False, f"returned {tuple(float(v) for v in ci)}")
 except ValueError as e:
     verdict(True, f"raised ValueError: {e}")
