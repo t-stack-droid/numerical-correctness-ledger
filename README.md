@@ -4,10 +4,11 @@ Checks of statistical and scientific Python functions against independently comp
 
 ## What is here
 
-- `FINDINGS.md`: confirmed defects in scipy, statsmodels, networkx and mne, each with a short explanation of the correct value.
-- `repro/`: one standalone script per defect. Each imports only the library under test plus numpy, scipy or mpmath, prints what it found, and exits with status 1 while the defect is present.
+- `FINDINGS.md`: wrong results, accuracy losses, unexpected exceptions, and documentation and convention questions in scipy, statsmodels, networkx and mne, each with a short explanation, and a list of corrections to earlier versions.
+- `repro/`: one standalone script per defect. Each imports only the library under test plus numpy, scipy or mpmath, prints what it found, and exits with status 1 while the discrepancy is present, 0 when it is not reproduced, and 2 when the script cannot run.
 - `run_all.py`: runs every script against the installed packages and writes a table.
 - `STATUS.md`: the latest run against current releases and development versions.
+- `VERSIONS.md`: the outcome of each script on earlier releases.
 
 ## How the defects were found
 
@@ -20,7 +21,7 @@ pip install scipy statsmodels networkx mne mpmath
 python run_all.py
 ```
 
-or run a single script, for example `python repro/scipy_skewtest_symmetric_sample.py`.
+`python run_all.py --log logs` also saves each script's full output (exit status, stdout, stderr) in `logs/`. Or run a single script, for example `python repro/scipy_skewtest_symmetric_sample.py`.
 
 ## Scope and limits
 
