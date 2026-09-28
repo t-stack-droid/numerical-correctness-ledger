@@ -11,7 +11,7 @@ Checks of statistical and scientific Python functions against independently comp
 
 ## How the defects were found
 
-A daily job runs about 1,000 checks on 126 functions in scipy, statsmodels, networkx, mne, astropy and numpy. Each check compares a library result with a value computed another way: exact enumeration of small cases, exact rational arithmetic, high-precision arithmetic (mpmath), brute force, or a mathematical identity the function must satisfy (for example, invariance under relabelling or rescaling). The checks were written with the help of AI models. A check that fails is not reported until a second review and a direct recomputation agree that the library, not the check, is wrong; many failing checks turn out to be the check's fault and are discarded.
+A daily job runs about 1,800 checks on 225 functions in scipy, statsmodels, networkx, mne, astropy and numpy. Each check compares a library result with a value computed another way: exact enumeration of small cases, exact rational arithmetic, high-precision arithmetic (mpmath), brute force, or a mathematical identity the function must satisfy (for example, invariance under relabelling or rescaling). The checks were written with the help of AI models. A check that fails is not reported until a second review and a direct recomputation agree that the library, not the check, is wrong; many failing checks turn out to be the check's fault and are discarded.
 
 ## Using the scripts
 

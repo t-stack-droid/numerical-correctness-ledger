@@ -23,6 +23,10 @@ Each row has a script in `repro/` that exits with status 1 while the defect is p
 | mne | `stats.permutation_cluster_1samp_test`, exact one-tailed | observed statistic counted twice, all-flip pattern omitted | `mne_permutation_cluster_1samp_exact_one_tailed.py` |
 | mne | `stats.f_mway_rm(correction=True)` | Greenhouse-Geisser epsilon from uncentered cross-products | `mne_f_mway_rm_greenhouse_geisser.py` |
 | mne | `stats.fdr_correction` | strict inequality at the boundary contradicts Benjamini-Hochberg and the returned adjusted p-values | `mne_fdr_correction_boundary.py` |
+| scipy | `special.hyperu` | NaN for negative non-integer `a` (finite by DLMF 13.2) | `scipy_hyperu_negative_a.py` |
+| scipy | `special.nctdtridf` | fails to invert `nctdtr` for an attainable probability; returns the 1e100 sentinel (release 1.18.1; not reproduced on the development branch) | `scipy_nctdtridf_roundtrip.py` |
+| scipy | `stats.dlaplace` | `logpmf` is -inf for large abs(k); `sf` is 0 in the far tail (1.29e-24 expected) | `scipy_dlaplace_log_and_tail.py` |
+| networkx | `find_induced_nodes` | empty set for a star graph (expected {0, 1, 2}) | `networkx_find_induced_nodes_star.py` |
 
 ## Crashes
 
@@ -31,9 +35,12 @@ Each row has a script in `repro/` that exits with status 1 while the defect is p
 | statsmodels | `chisquare_effectsize(axis=1)` | `statsmodels_chisquare_effectsize_axis.py` |
 | statsmodels | `transform_corr_normal(method="spearman")` with correlations of mixed sign | `statsmodels_transform_corr_normal_spearman.py` |
 | statsmodels | `runstest_2samp` with integer arrays containing ties | `statsmodels_runstest_2samp_integer_ties.py` |
+| networkx | `generate_random_paths` with an isolated node | `networkx_generate_random_paths_isolated.py` |
 
 ## Documentation questions
 
 | Library | Function | Script |
 |---|---|---|
 | mne | `stats.f_oneway(sigma=...)`: docstring and code describe different regularisations | `mne_f_oneway_sigma_docstring.py` |
+| networkx | `edge_current_flow_betweenness_centrality`: documented normalisation differs from the code (the code matches `edge_betweenness_centrality`) | `networkx_edge_current_flow_normalization_docstring.py` |
+| networkx | `node_degree_xy(nodes=...)`: documented edge selection differs from the code | `networkx_node_degree_xy_nodes_docstring.py` |
