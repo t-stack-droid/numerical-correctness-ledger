@@ -3,9 +3,13 @@
 Run on 2026-09-28 with:
 
 - scipy: release 1.18.1, development 2.0.0.dev0
+  (release: numpy 2.5.3, mpmath 1.4.1; development: numpy 2.6.0.dev0, mpmath 1.5.0a1)
 - statsmodels: release 0.15.0, development 0.15.1.dev84+g15b987752
+  (release: numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1; development: numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1)
 - networkx: release 3.7, development 3.7.1rc0.dev0
+  (release: numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1; development: numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1)
 - mne: release 1.13.2, development 1.14.0.dev48+gd7ffc6037
+  (release: numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1; development: numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1)
 
 | Script | Release | Development | Message (release) |
 |---|---|---|---|
@@ -14,20 +18,17 @@ Run on 2026-09-28 with:
 | `mne_fdr_correction_boundary.py` | present | present | reject=[True, False], p_adj=[0.02, 0.05] |
 | `mne_permutation_cluster_1samp_all_not_exact.py` | present | present | 'all': len(H0) = 511, p = [0.0019569471624266144]; exact (n_permutations=512): len(H0) = 512, p = [0.001953125] |
 | `mne_permutation_cluster_1samp_exact_one_tailed.py` | present | present | observed statistic appears 2 times in the 64-pattern null; expected 1 |
-| `networkx_edge_current_flow_normalization_docstring.py` | present | present | got {(0, 1): 0.49999999999999983, (1, 2): 0.6666666666666665, (2, 3): 0.5}; documented normalisation gives 1.0, 1.333, 1.0 |
-| `networkx_find_induced_nodes_star.py` | present | present | got set(), expected {0, 1, 2} |
 | `networkx_generate_random_paths_isolated.py` | present | present | raised ValueError: probabilities contain NaN |
 | `networkx_group_betweenness_regression.py` | present | present | (got, expected) = [(0.5, 0.0), (5.0, 3.0)] |
 | `networkx_node_degree_xy_nodes_docstring.py` | present | present | got []; the documented behaviour gives 4 pairs |
 | `scipy_dlaplace_log_and_tail.py` | present | present | logpmf(-1000, 1) = -inf (expected -1000.7719368329053); sf(10, 5) = 0.0 (expected 1.2908835202659582e-24) |
-| `scipy_estimated_cdf_averaged_inverted_cdf.py` | present | present | got 0.5, expected 0.375 |
 | `scipy_hyperu_negative_a.py` | present | present | (x, scipy, mpmath) = [(0.1, nan, -0.3654721946005413), (1.0, nan, 0.17023014757496954), (5.0, nan, 9.463159393834404)] |
-| `scipy_nctdtridf_roundtrip.py` | present | not reproduced | p = nctdtr(df, nc, t) = 0.9785864072356195; nctdtridf(p, nc, t) = 1e+100, expected 7.42072530317493 |
+| `scipy_nctdtridf_roundtrip.py` | present | present | p = 0.9785864072356195; nctdtridf(p, nc, t) = 1e+100, CDF residual 2.5e-04 (df = 7.42072530317493 solves it) |
 | `scipy_poisson_means_test_equal_rates.py` | present | present | pvalue = 0.8646647167633871, expected 1.0 |
 | `scipy_skewtest_symmetric_sample.py` | present | present | statistic=1.0108048609177787 pvalue=0.3121098361421897; expected 0 and 1 |
 | `scipy_spearmanr_omit_pvalue.py` | present | present | statistic=1.0000000000000002 pvalue=1.0; expected statistic 1 and pvalue 0 |
 | `scipy_truncate_icdf_far_tail.py` | present | present | icdf(0.5) = inf, expected 10.06841183608143 |
-| `scipy_truncate_pdf_at_bound.py` | present | present | pdf(2) = 0.0, expected 2.373215532822906 |
+| `scipy_truncate_pdf_at_bound.py` | present | present | truncated Normal at its bound: pdf 0.0, logpdf -inf; support (2.0, 8.0); truncnorm pdf 2.373215532822906; truncated Uniform pdf at its bound 0.1666666666666666 |
 | `statsmodels_chisquare_effectsize_axis.py` | present | present | axis=1 raised ValueError: operands could not be broadcast together with shapes (3,4) (3,) |
 | `statsmodels_confint_poisson_2indep_sqrtcc_exposure.py` | present | present | exposure2=10: (0.22451098663306185, 1.0565389600576878); exposure2=40: (0.22451098663306185, 1.0565389600576878); expected the second to be 4 times the first |
 | `statsmodels_fdrcorrection_twostage_bool_maxiter.py` | present | present | maxiter=False corrected p [0.06, 0.06, 0.06, 0.45, 1.0], maxiter=1 [0.024, 0.024, 0.024, 0.18, 0.432] |
