@@ -1,12 +1,13 @@
-"""statsmodels runstest_1samp: wrong continuity correction.
+"""statsmodels runstest_1samp: continuity correction with the wrong sign for deviations between 0 and 0.5.
 
-With correction=True (the default) and fewer than 50 observations, the code uses `elif
-rdemean < 0.5: z = rdemean + 0.5`, where rdemean is the number of runs minus its
-expectation. The continuity correction moves the deviation towards 0 by 0.5 and should
-give 0 when the deviation is between -0.5 and 0.5; for deviations strictly between -0.5
-and 0.5 the code returns the deviation plus 0.5 instead (at -0.5 the result, 0, is
-right). When the number of runs equals its expectation the statistic must be 0 and the
-p-value 1.
+The docstring says the statistic is corrected by 0.5 'following the SAS manual'. SAS
+Usage Note 33092 gives the rule: 'if N GE 50 then Z = (Runs - mu) / sigma; else if Runs-
+mu LT 0 then Z = (Runs-mu+0.5)/sigma; else Z = (Runs-mu-0.5)/sigma'. statsmodels uses
+`elif rdemean < 0.5: z = rdemean + 0.5`, so for 0 <= Runs - mu < 0.5 it adds 0.5 where
+the SAS rule subtracts it. For ten values with one above the cutoff there are 3 runs
+against an expectation of 14/5 (variance 4/25): the SAS rule gives z = -0.75, p =
+0.4533; the library returns z = 1.75, p = 0.0801. When Runs equals mu only the sign of z
+differs, so the two-sided p-value is unchanged.
 
 Run: python statsmodels_runstest_continuity_correction.py
 Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by
@@ -32,9 +33,22 @@ def _could_not_run(exc_type, exc, tb):
 
 sys.excepthook = _could_not_run
 
+import math
+from fractions import Fraction as F
 import numpy as np
 from statsmodels.stats.api import runstest_1samp
 
-# [1,1,0,1,0,0]: 3 ones, 3 zeros, 4 runs; expected runs 2*3*3/6 + 1 = 4
-z, p = runstest_1samp(np.array([1, 1, 0, 1, 0, 0.0]), cutoff=0.5, correction=True)
-verdict(not (abs(float(z)) <= 1e-12 and abs(float(p) - 1) <= 1e-12), f"z={float(z):.4f} p={float(p):.4f}; expected z=0, p=1")
+x = np.array([0, 0, 0, 0, 1, 0, 0, 0, 0, 0.0])
+ind = (x >= 0.5).astype(int)
+runs = 1 + int(np.sum(ind[1:] != ind[:-1]))
+n1, n0 = int(ind.sum()), int(len(ind) - ind.sum())
+n = n0 + n1
+mu = F(2 * n0 * n1, n) + 1
+var = F(2 * n0 * n1 * (2 * n0 * n1 - n), n * n * (n - 1))
+d = runs - mu
+num = d + F(1, 2) if d < 0 else d - F(1, 2)
+z_sas = float(num) / math.sqrt(float(var))
+p_sas = math.erfc(abs(z_sas) / math.sqrt(2))
+z, p = (float(v) for v in runstest_1samp(x, cutoff=0.5, correction=True))
+verdict(not (abs(z - z_sas) <= 1e-12 and abs(p - p_sas) <= 1e-12),
+        f"runs {runs}, expectation {mu}; library z = {z:.4f}, p = {p:.4f}; SAS rule z = {z_sas:.4f}, p = {p_sas:.4f}")

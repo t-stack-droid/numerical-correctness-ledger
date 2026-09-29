@@ -1,9 +1,11 @@
 """scipy.stats.skewtest: a perfectly symmetric sample gets Z = 1.01, p = 0.31.
 
-For x = 1..8 the sample skewness is exactly 0. The test statistic Z = delta * log(y /
-alpha + sqrt((y / alpha)**2 + 1)) is then log(1) = 0, with no singularity, and p = 1; a
-sample perturbed by 1e-9 gives Z of about 4e-10. The code replaces y = 0 by 1 before
-this formula.
+For x = 1..8 the sample skewness is exactly 0. The source replaces y = 0 by 1 (`y =
+xp.where(y == 0, 1., y)`) before the transformation Z = delta * log(y / alpha + sqrt((y
+/ alpha)**2 + 1)), which is finite at y = 0 and equals 0 there, so exact zero skewness
+gives Z = 1.0108 and p = 0.3121 instead of 0 and 1. The docstring example for this
+sample prints the same output, so it records the substitution rather than a separate
+rule.
 
 Run: python scipy_skewtest_symmetric_sample.py
 Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by

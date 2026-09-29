@@ -1,9 +1,10 @@
-"""statsmodels runstest_2samp: wrong continuity correction.
+"""statsmodels runstest_2samp: the same continuity-correction sign error.
 
-runstest_2samp computes the same runs statistic on the combined ordering and has the
-same `elif rdemean < 0.5` branch as runstest_1samp. For the combined order x x x y y x y
-y x y there are 6 runs, the expected number is 2*5*5/10 + 1 = 6, so the statistic must
-be 0 and the p-value 1.
+runstest_2samp returns `Runs(xindicator).runs_test(correction=correction)`, the same
+method and `elif rdemean < 0.5` branch as runstest_1samp (see that script for the SAS
+rule the docstring cites). For x = [3, 7] and y = [1, 2, 4, 5, 6] the pooled order is y
+y x y y y x, 4 runs against an expectation of 27/7 (variance 130/147): the SAS rule
+gives z = -0.3798, p = 0.7041; the library returns z = 0.6836, p = 0.4942.
 
 Run: python statsmodels_runstest_2samp_continuity_correction.py
 Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by
@@ -29,8 +30,22 @@ def _could_not_run(exc_type, exc, tb):
 
 sys.excepthook = _could_not_run
 
+import math
+from fractions import Fraction as F
 import numpy as np
 from statsmodels.stats.api import runstest_2samp
 
-z, p = runstest_2samp(np.array([1, 2, 3, 6, 9.0]), np.array([4, 5, 7, 8, 10.0]), correction=True)
-verdict(not (abs(float(z)) <= 1e-12 and abs(float(p) - 1) <= 1e-12), f"z={float(z):.4f} p={float(p):.4f}; expected z=0, p=1")
+x, y = [3.0, 7.0], [1.0, 2.0, 4.0, 5.0, 6.0]
+lab = [g for _, g in sorted([(v, 0) for v in x] + [(v, 1) for v in y])]
+runs = 1 + sum(a != b for a, b in zip(lab, lab[1:]))
+n0, n1 = len(x), len(y)
+n = n0 + n1
+mu = F(2 * n0 * n1, n) + 1
+var = F(2 * n0 * n1 * (2 * n0 * n1 - n), n * n * (n - 1))
+d = runs - mu
+num = d + F(1, 2) if d < 0 else d - F(1, 2)
+z_sas = float(num) / math.sqrt(float(var))
+p_sas = math.erfc(abs(z_sas) / math.sqrt(2))
+z, p = (float(v) for v in runstest_2samp(np.array(x), np.array(y), correction=True))
+verdict(not (abs(z - z_sas) <= 1e-12 and abs(p - p_sas) <= 1e-12),
+        f"runs {runs}, expectation {mu}; library z = {z:.4f}, p = {p:.4f}; SAS rule z = {z_sas:.4f}, p = {p_sas:.4f}")

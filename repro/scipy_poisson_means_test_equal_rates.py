@@ -1,8 +1,12 @@
 """scipy.stats.poisson_means_test: p-value below 1 when the two observed rates are equal.
 
 When the observed statistic is 0, every outcome is at least as extreme, so the p-value
-is 1. The outcome (0, 0) has variance 0, the statistic becomes 0/0 = NaN, the comparison
-with NaN is false, and that outcome's probability is dropped (here exp(-2) = 0.1353).
+is 1. The outcome (0, 0) has variance 0, the statistic becomes 0/0 = NaN (source:
+`t_x1x2 = lmbds_diff / np.sqrt(var_x1x2)`), the comparison `np.abs(t_x1x2) >=
+np.abs(t_k1k2)` with NaN is false, and that outcome's probability is dropped (here
+exp(-2) = 0.1353). Whatever real value the undefined statistic at (0, 0) is given, |t(0,
+0)| >= 0 = |t_obs|, so the p-value is 1 under every such convention; scipy itself
+returns 1 when k1 = k2 = 0.
 
 Run: python scipy_poisson_means_test_equal_rates.py
 Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by

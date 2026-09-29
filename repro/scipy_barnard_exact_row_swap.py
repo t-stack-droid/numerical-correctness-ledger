@@ -2,9 +2,9 @@
 
 Swapping the rows of the table negates every Wald statistic and maps pi to 1 - pi, so
 the two-sided p-value cannot change. For [[14, 9], [5, 19]] with pooled=False the
-library returns 0.0055692 and, for the swapped table, 0.0051505. This is consistent with
-the tie handling in scipy_barnard_exact_ties.py (in one orientation the observed table's
-own tie is lost to rounding), but this script shows only the asymmetry.
+library returns 0.0055692 and, for the swapped table, 0.0051505; by symmetry they must
+be equal. scipy_barnard_exact_ties.py shows how exact ties are lost to float rounding in
+this function. This script shows only the asymmetry.
 
 Run: python scipy_barnard_exact_row_swap.py
 Exit status: 1 = the discrepancy was detected in the installed version; 0 = not reproduced by
