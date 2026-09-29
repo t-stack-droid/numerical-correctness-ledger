@@ -8,12 +8,15 @@ Outcome of each script in `repro/` on earlier releases and on the development br
 |---|---|---|---|---|---|---|
 | `scipy_barnard_exact_row_swap.py` | defect | defect | defect | defect | defect | defect |
 | `scipy_barnard_exact_ties.py` | defect | defect | defect | defect | defect | defect |
+| `scipy_boxcox_normmax_pearsonr_ymax.py` | defect | defect | defect | defect | defect | defect |
 | `scipy_boxcox_normmax_ymax.py` | defect | defect | defect | defect | defect | defect |
+| `scipy_dlaplace_log_tails.py` | defect | defect | defect | defect | defect | defect |
 | `scipy_dlaplace_logpmf_large_k.py` | defect | defect | defect | defect | defect | defect |
 | `scipy_dlaplace_sf_far_tail.py` | defect | defect | defect | defect | defect | defect |
 | `scipy_hyperu_negative_a.py` | defect | defect | defect | defect | defect | defect |
 | `scipy_hyperu_negative_b_accuracy.py` | defect | defect | defect | defect | defect | defect |
 | `scipy_itj0y0_accuracy.py` | defect | defect | defect | defect | defect | defect |
+| `scipy_itj0y0_j0_accuracy.py` | defect | defect | defect | defect | defect | defect |
 | `scipy_kstest_norm_args.py` | - | - | - | defect | defect | - |
 | `scipy_nctdtridf_roundtrip.py` | defect | defect | defect | defect | defect | defect |
 | `scipy_nctdtridf_small_df.py` | defect | defect | defect | defect | defect | - |
@@ -32,6 +35,7 @@ Outcome of each script in `repro/` on earlier releases and on the development br
 | Script | 0.14.6 | 0.15.0 | development |
 |---|---|---|---|
 | `statsmodels_chisquare_effectsize_axis.py` | defect | defect | defect |
+| `statsmodels_chisquare_effectsize_axis1_values.py` | defect | defect | defect |
 | `statsmodels_confint_poisson_2indep_sqrtcc_exposure.py` | defect | defect | defect |
 | `statsmodels_confint_poisson_midp_zero_count.py` | defect | defect | defect |
 | `statsmodels_confint_proportions_2indep_score_diff.py` | defect | defect | defect |
@@ -44,6 +48,7 @@ Outcome of each script in `repro/` on earlier releases and on the development br
 | `statsmodels_nonequivalence_poisson_2indep.py` | defect | defect | defect |
 | `statsmodels_nonequivalence_poisson_2indep_statistic.py` | defect | defect | defect |
 | `statsmodels_runstest_2samp_continuity_correction.py` | defect | defect | defect |
+| `statsmodels_runstest_2samp_group_labels.py` | defect | defect | defect |
 | `statsmodels_runstest_2samp_integer_ties.py` | defect | defect | defect |
 | `statsmodels_runstest_continuity_correction.py` | defect | defect | defect |
 | `statsmodels_score_test_proportions_2indep_constrained_mle.py` | defect | defect | defect |
@@ -69,6 +74,7 @@ Outcome of each script in `repro/` on earlier releases and on the development br
 | `mne_f_mway_rm_greenhouse_geisser.py` | defect | defect | defect | defect |
 | `mne_f_oneway_sigma_docstring.py` | n/a | defect | defect | defect |
 | `mne_fdr_correction_boundary.py` | defect | defect | defect | defect |
+| `mne_permutation_cluster_1samp_adjacency_false.py` | defect | defect | defect | - |
 | `mne_permutation_cluster_1samp_all_not_exact.py` | defect | defect | defect | defect |
 | `mne_permutation_cluster_1samp_all_seed_dependent.py` | defect | defect | defect | defect |
 | `mne_permutation_cluster_1samp_exact_one_tailed.py` | defect | defect | defect | defect |
